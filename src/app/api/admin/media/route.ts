@@ -10,17 +10,22 @@ export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    await assertAdminSession();
+    await assertAdminSession("media:view");
     return NextResponse.json({ media: await listMedia() });
   } catch (error) {
-    const status = error instanceof Error && error.message === "UNAUTHORIZED" ? 401 : 500;
+    const status =
+      error instanceof Error && error.message === "UNAUTHORIZED"
+        ? 401
+        : error instanceof Error && error.message === "FORBIDDEN"
+          ? 403
+          : 500;
     return NextResponse.json({ error: "Unable to load media." }, { status });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    await assertAdminSession();
+    await assertAdminSession("media:manage");
     const formData = await request.formData();
     const file = formData.get("file");
 
@@ -50,6 +55,10 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    if (error instanceof Error && error.message === "FORBIDDEN") {
+      return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }
 
     return NextResponse.json(

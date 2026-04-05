@@ -1,5 +1,8 @@
 import { ObjectId } from "mongodb";
 import { z } from "zod";
+import { hasPermission } from "@/lib/admin-access";
+import type { AdminSession } from "@/lib/admin-auth";
+import { listAdminUsers, type AdminUserRecord } from "@/lib/admin-users";
 import { getDatabase } from "@/lib/mongodb";
 
 const clientSchema = z.object({
@@ -73,11 +76,13 @@ export type AdminOverview = {
     campaigns: number;
     mediaAssets: number;
     deliveryLogs: number;
+    adminUsers: number;
   };
   clients: ClientRecord[];
   campaigns: CampaignRecord[];
   media: MediaRecord[];
   deliveryLogs: DeliveryLogRecord[];
+  adminUsers: AdminUserRecord[];
 };
 
 type ClientDocument = ClientInput & {
@@ -232,12 +237,18 @@ export async function resolveCampaignMedia(mediaIds: string[]): Promise<MediaRec
   return docs.map(serializeMedia);
 }
 
-export async function getAdminOverview(): Promise<AdminOverview> {
-  const [clients, campaigns, media, deliveryLogs] = await Promise.all([
-    listClients(),
-    listCampaigns(),
-    listMedia(),
-    listDeliveryLogs(),
+export async function getAdminOverview(session: AdminSession): Promise<AdminOverview> {
+  const canViewClients = hasPermission(session.permissions, "clients:view");
+  const canViewCampaigns = hasPermission(session.permissions, "campaigns:view");
+  const canViewMedia = hasPermission(session.permissions, "media:view");
+  const canViewDelivery = hasPermission(session.permissions, "delivery:view");
+  const canViewAdmins = hasPermission(session.permissions, "admins:view");
+  const [clients, campaigns, media, deliveryLogs, adminUsers] = await Promise.all([
+    canViewClients ? listClients() : Promise.resolve([]),
+    canViewCampaigns ? listCampaigns() : Promise.resolve([]),
+    canViewMedia ? listMedia() : Promise.resolve([]),
+    canViewDelivery ? listDeliveryLogs() : Promise.resolve([]),
+    canViewAdmins ? listAdminUsers() : Promise.resolve([]),
   ]);
 
   return {
@@ -247,10 +258,12 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       campaigns: campaigns.length,
       mediaAssets: media.length,
       deliveryLogs: deliveryLogs.length,
+      adminUsers: adminUsers.length,
     },
     clients,
     campaigns,
     media,
     deliveryLogs,
+    adminUsers,
   };
 }

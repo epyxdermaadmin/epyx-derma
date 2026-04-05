@@ -14,7 +14,7 @@ export async function POST(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await assertAdminSession();
+    await assertAdminSession("campaigns:dispatch");
     const { id } = await context.params;
     const campaign = await getCampaignById(id);
 
@@ -88,6 +88,10 @@ export async function POST(
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    if (error instanceof Error && error.message === "FORBIDDEN") {
+      return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }
 
     return NextResponse.json(

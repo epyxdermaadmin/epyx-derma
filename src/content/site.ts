@@ -37,7 +37,7 @@ export const doctorProfile = {
 
 export const legacyGalleryImages = [
   {
-    src: "/legacy/skin-gallery-1.jpg",
+    src: "/legacy/epyxdermamain.jpg",
     alt: "Dermatology clinic gallery image from the existing Neo Vision and Skin site",
   },
   {
