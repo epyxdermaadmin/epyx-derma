@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 export function AdminLogin() {
-  const [username, setUsername] = useState("admin");
+  const [username, setUsername] = useState("epyxdermaadmin");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -36,8 +36,9 @@ export function AdminLogin() {
         <span className="eyebrow">Staff access</span>
         <h2>Sign in to EpyxDerma Admin</h2>
         <p>
-          Use the admin credentials from your local environment to manage clients,
-          draft campaigns, and upload media for future WhatsApp sends.
+          Use an active admin login to enter the role-based workspace. The bootstrap
+          environment credentials create the first super user, and that super user can
+          create campaign, receptionist, and management logins afterward.
         </p>
         <form className="admin-form" onSubmit={handleSubmit}>
           <label>

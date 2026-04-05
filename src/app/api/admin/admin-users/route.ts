@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { assertAdminSession } from "@/lib/admin-auth";
-import { createCampaign, listCampaigns } from "@/lib/admin-data";
+import { createAdminUser, listAdminUsers } from "@/lib/admin-users";
 
 export async function GET() {
   try {
-    await assertAdminSession("campaigns:view");
-    return NextResponse.json({ campaigns: await listCampaigns() });
+    await assertAdminSession("admins:view");
+    return NextResponse.json({ adminUsers: await listAdminUsers() });
   } catch (error) {
     const status =
       error instanceof Error && error.message === "UNAUTHORIZED"
@@ -13,16 +13,16 @@ export async function GET() {
         : error instanceof Error && error.message === "FORBIDDEN"
           ? 403
           : 500;
-    return NextResponse.json({ error: "Unable to load campaigns." }, { status });
+    return NextResponse.json({ error: "Unable to load admin users." }, { status });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    await assertAdminSession("campaigns:manage");
+    const session = await assertAdminSession("admins:manage");
     const body = await request.json();
-    const campaign = await createCampaign(body);
-    return NextResponse.json({ campaign }, { status: 201 });
+    const adminUser = await createAdminUser(body, session.username);
+    return NextResponse.json({ adminUser }, { status: 201 });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
@@ -33,8 +33,12 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { error: "Unable to save campaign.", details: error instanceof Error ? error.message : undefined },
-      { status: 400 }
+      {
+        error: "Unable to create admin user.",
+        details: error instanceof Error ? error.message : undefined,
+      },
+      { status: 400 },
     );
   }
 }
+

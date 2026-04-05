@@ -5,7 +5,7 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <Link href="/" className="brand-lockup" aria-label={`${brand.name} home`}>
+        <Link href="/#story" className="brand-lockup" aria-label={`${brand.name} home`}>
           <span className="brand-lockup__mark" aria-hidden="true" />
           <span className="brand-lockup__text">
             <strong>{brand.name}</strong>
@@ -21,7 +21,7 @@ export function SiteHeader() {
               </Link>
             ))}
           </div>
-          <Link href="/contact" className="site-nav__cta">
+          <Link href="/#contact" className="site-nav__cta">
             Book now
           </Link>
         </nav>

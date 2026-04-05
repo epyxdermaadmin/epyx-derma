@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { appEnv } from "@/lib/env";
+import { authenticateAdmin } from "@/lib/admin-users";
 import { setAdminSession } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
@@ -8,17 +8,27 @@ export async function POST(request: Request) {
     password?: string;
   };
 
-  if (
-    body.username !== appEnv.ADMIN_USERNAME ||
-    body.password !== appEnv.ADMIN_PASSWORD
-  ) {
+  if (!body.username || !body.password) {
+    return NextResponse.json(
+      { error: "Username and password are required." },
+      { status: 400 }
+    );
+  }
+
+  const adminUser = await authenticateAdmin(body.username, body.password);
+
+  if (!adminUser) {
     return NextResponse.json(
       { error: "Invalid admin credentials." },
       { status: 401 }
     );
   }
 
-  const response = NextResponse.json({ ok: true, username: body.username });
-  setAdminSession(response, body.username);
+  const response = NextResponse.json({
+    ok: true,
+    username: adminUser.username,
+    role: adminUser.role,
+  });
+  setAdminSession(response, adminUser.id);
   return response;
 }

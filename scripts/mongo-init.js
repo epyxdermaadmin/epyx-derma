@@ -14,6 +14,7 @@ async function main() {
   await db.createCollection("campaigns").catch(ignoreNamespaceExists);
   await db.createCollection("mediaAssets").catch(ignoreNamespaceExists);
   await db.createCollection("deliveryLogs").catch(ignoreNamespaceExists);
+  await db.createCollection("adminUsers").catch(ignoreNamespaceExists);
 
   await db.collection("clients").createIndexes([
     { key: { phone: 1 }, name: "client_phone_unique", unique: true },
@@ -32,6 +33,11 @@ async function main() {
   await db.collection("deliveryLogs").createIndexes([
     { key: { campaignId: 1, clientId: 1 }, name: "delivery_campaign_client" },
     { key: { status: 1, sentAt: -1 }, name: "delivery_status_sent_at" },
+  ]);
+
+  await db.collection("adminUsers").createIndexes([
+    { key: { username: 1 }, name: "admin_username_unique", unique: true },
+    { key: { role: 1, status: 1 }, name: "admin_role_status" },
   ]);
 
   console.log(`MongoDB initialized for database: ${dbName}`);

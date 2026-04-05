@@ -19,13 +19,12 @@ export const brand = {
 };
 
 export const navigation = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/treatments", label: "Treatments" },
-  { href: "/clinical-dermatology", label: "Clinical" },
-  { href: "/aesthetic-dermatology", label: "Aesthetic" },
-  { href: "/hair-scalp", label: "Hair & Scalp" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#story", label: "Story" },
+  { href: "/#doctor", label: "Doctor" },
+  { href: "/#care-map", label: "Care Map" },
+  { href: "/#proof", label: "Proof" },
+  { href: "/#gallery", label: "Gallery" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export const doctorProfile = {
@@ -38,7 +37,7 @@ export const doctorProfile = {
 
 export const legacyGalleryImages = [
   {
-    src: "/legacy/skin-gallery-1.jpg",
+    src: "/legacy/epyxdermamain.jpg",
     alt: "Dermatology clinic gallery image from the existing Neo Vision and Skin site",
   },
   {
