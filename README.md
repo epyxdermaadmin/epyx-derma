@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EpyxDerma
 
-## Getting Started
+Premium dermatology hospital website built with Next.js and TypeScript. The public experience is production-ready, while the codebase now includes a working admin area for clients, campaign drafts, media uploads, and WhatsApp dispatch integration.
 
-First, run the development server:
+## Scripts
+
+- `npm run dev` starts the local web app.
+- `npm run build` creates the production build.
+- `npm run start` serves the production build.
+- `npm run lint` runs ESLint.
+- `npm run typecheck` runs TypeScript checks.
+- `npm run db:init` creates MongoDB collections and indexes for the admin layer.
+
+## Environment
+
+Copy `.env.example` to `.env.local` and adjust values for your environment.
+
+Important admin defaults requested for this project:
+
+- `ADMIN_USERNAME=epyxdermaadmin`
+- `ADMIN_PASSWORD=Epyx@test`
+
+For real WhatsApp sending through Meta WhatsApp Cloud API, also set:
+
+- `WHATSAPP_ACCESS_TOKEN`
+- `WHATSAPP_PHONE_NUMBER_ID`
+- `WHATSAPP_API_VERSION`
+
+## MongoDB
+
+You can run MongoDB either locally or through Docker:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker compose up -d mongodb
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After MongoDB is available:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run db:init
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Shape
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app`: App Router pages, admin UI routes, API routes, and SEO
+- `src/components`: reusable UI and admin building blocks
+- `src/content`: brand and page content adapted from the current dermatology practice
+- `src/lib`: environment, metadata, Mongo, auth, admin repositories, and WhatsApp service helpers
+- `scripts`: local tooling like MongoDB bootstrap
